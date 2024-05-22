@@ -1,0 +1,173 @@
+**Name: Theodor-Ioan Rolea**
+
+**Group: 333CA**
+
+# HW3 ASC - Matrix Multiplication Optimization
+
+## Overview
+
+The aim of this project is to optimize as much as possible the time it takes
+to multiply two matrices. The initial implementation is a naive, non-optimized
+one, then it was optimized using the knowledge gained from the lab 9 [1], using
+blocked matrix multiplication and smart pointer arithmetic, and finally, the
+code was optimized using the BLAS library [2].
+
+***
+
+# Code Structure
+
+The code is divided into three parts:
+
+- solver_neopt.c - the initial, non-optimized implementation. This approach
+is the simplest one, but it is not efficient at all. It uses a simple nested
+loops to multiply the matrices. No optimization whatsoever is done here.
+
+- solver_opt.c - the optimized implementation. This approach uses blocked
+matrix multiplication and smart pointer arithmetic to optimize the code by
+efficiently using the cache memory. The code is divided into blocks, and the
+blocks are then multiplied. This way, the cache memory is used more efficiently
+and the code runs faster. Moreover, the code uses constant defines to avoid
+repeated calculations, uses register variables for the most used variables and
+uses smart pointer arithmetic to avoid the overhead of array indexing.
+
+- solver_blas.c - the implementation using the BLAS library. This approach
+uses the BLAS library to multiply the matrices. The code is very simple and
+straightforward, as the BLAS library is very efficient and optimized. I've made
+sure to use the `dtrmm` function, which is the most efficient one for our
+superior triangular matrix.
+
+
+***
+
+# Development Insights
+
+- I've tried multiple variable types to supercharge the speed of the code[3][4].
+I've used `register` variables for the heavily variables and opted to use
+`restrict` for the pointers. This way, the compiler can optimize the code better.
+
+***
+
+# Results
+
+The following results have been ran on the haswell cluster using the following
+command:
+
+`sbatch -p haswell --time 00:03:00 --exclude=haswell-wn[29-30] script.sh`
+
+The tests have been ran for N=200, N=400, N=800, N=1200 and N=1600.
+
+### Non-Optimized Implementation
+
+- N=200: Time=0.072361
+- N=400: Time=0.642517
+- N=800: Time=5.335263
+- N=1200: Time=16.261950
+- N=1600: Time=58.238213
+
+### Optimized Implementation
+
+- N=200: Time=0.024551
+- N=400: Time=0.188105
+- N=800: Time=1.446950
+- N=1200: Time=4.831699
+- N=1600: Time=11.562099
+
+### BLAS Implementation
+
+- N=200: Time=0.005184
+- N=400: Time=0.029072
+- N=800: Time=0.186970
+- N=1200: Time=0.590254
+- N=1600: Time=1.363160
+
+***
+
+# Conclusion
+
+The results show that the optimized implementation is much faster than the
+non-optimized one, but BLAS's implementation is on a whole other level. The
+BLAS library is very efficient and optimized, and it is the best choice for
+matrix multiplication. The optimized implementation is a good choice if you
+want to avoid using external libraries, but it is not as efficient as the BLAS
+library.
+
+***
+
+# Valgrind
+
+I've ran the valgrind tool on all three implementations, and the results
+show that there are no memory leaks in the code.
+
+-  All heap blocks were freed -- no leaks are possible
+- ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+
+***
+
+# Cachegrind
+
+These results are from cache and branch-prediction profiling of the three
+different implementations:
+
+1. **BLAS Solution**:
+   - Time: 2.504215 seconds.
+   - Instruction Cache Misses (I1 misses): 23,237.
+   - Data Cache Misses (D1 misses): 1,794,897.
+   - Level 1 Data Cache Miss Rate (D1 miss rate): 1.9%.
+   - Level 1 Instruction Cache Miss Rate (I1 miss rate): 0.01%.
+   - Level 1 Data Cache Misses that stall processor (LLd misses): 160,184.
+   - Level 1 Instruction Cache Misses that stall processor (LLi misses): 3,529.
+   - Branch Mispredicts: 68,508.
+   - Branch Mispredict Rate: 1.2%.
+
+2. **Unoptimized Solution**:
+   - Time: 32.222828 seconds.
+   - Instruction Cache Misses (I1 misses): 1,670.
+   - Data Cache Misses (D1 misses): 112,550,967.
+   - Level 1 Data Cache Miss Rate (D1 miss rate): 3.8%.
+   - Level 1 Instruction Cache Miss Rate (I1 miss rate): 0.00%.
+   - Level 1 Data Cache Misses that stall processor (LLd misses): 153,276.
+   - Level 1 Instruction Cache Misses that stall processor (LLi misses): 1,594.
+   - Branch Mispredicts: 503,604.
+   - Branch Mispredict Rate: 0.4%.
+
+3. **Optimized Solution**:
+   - Time: 11.515837 seconds.
+   - Instruction Cache Misses (I1 misses): 1,689.
+   - Data Cache Misses (D1 misses): 18,013,904.
+   - Level 1 Data Cache Miss Rate (D1 miss rate): 3.8%.
+   - Level 1 Instruction Cache Miss Rate (I1 miss rate): 0.00%.
+   - Level 1 Data Cache Misses that stall processor (LLd misses): 153,282.
+   - Level 1 Instruction Cache Misses that stall processor (LLi misses): 1,609.
+   - Branch Mispredicts: 1,469,506.
+   - Branch Mispredict Rate: 0.7%.
+
+**Interpretation**:
+
+- The BLAS Solution is the fastest, followed by the Optimized Solution,
+and then the Unoptimized Solution.
+- The BLAS Solution has relatively low cache misses and branch mispredictions,
+indicating efficient cache utilization and branch prediction.
+- The Unoptimized Solution has significantly higher cache misses and branch
+mispredictions compared to the other two solutions, which explains its longer
+execution time.
+- The Optimized Solution shows improvements over the Unoptimized Solution but
+still has higher cache misses and branch mispredictions compared to the BLAS
+Solution, explaining its intermediate execution time.
+- Overall, optimizing cache usage and reducing branch mispredictions can
+significantly improve the performance of the solution, as demonstrated by
+the differences between the three implementations.
+
+# Final Thoughts
+
+I have really enjoyed working on this project. It was a great opportunity to
+learn more about matrix multiplication and optimization techniques. I have
+learned a lot about the importance of cache memory and how to optimize code
+to make the best use of it. I have also learned about the BLAS library and
+how efficient it is for matrix multiplication.
+
+# References
+
+- [1] https://ocw.cs.pub.ro/courses/asc/laboratoare/09
+- [2] http://www.netlib.org/blas/
+- [3] https://www.geeksforgeeks.org/understanding-register-keyword/
+- [4] https://www.geeksforgeeks.org/restrict-keyword-c/

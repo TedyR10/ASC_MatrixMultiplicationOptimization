@@ -1,0 +1,24 @@
+OPT SOLVER
+Run=./tema3_opt_m: N=200: Time=0.024551
+OPT SOLVER
+Run=./tema3_opt_m: N=400: Time=0.188105
+OPT SOLVER
+Run=./tema3_opt_m: N=800: Time=1.446950
+OPT SOLVER
+Run=./tema3_opt_m: N=1200: Time=4.831699
+OPT SOLVER
+Run=./tema3_opt_m: N=1600: Time=11.562099
+
+BLAS SOLVER
+Run=./tema3_blas: N=200: Time=0.005184
+Run=./tema3_blas: N=400: Time=0.029072
+Run=./tema3_blas: N=800: Time=0.186970
+Run=./tema3_blas: N=1200: Time=0.590254
+Run=./tema3_blas: N=1600: Time=1.363160
+
+NEOPT SOLVER
+Run=./tema3_neopt: N=200: Time=0.072361
+Run=./tema3_neopt: N=400: Time=0.642517
+Run=./tema3_neopt: N=800: Time=5.335263
+Run=./tema3_neopt: N=1200: Time=16.261950
+Run=./tema3_neopt: N=1600: Time=58.238213
